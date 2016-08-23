@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -18,7 +19,7 @@ import java.io.InputStreamReader;
 
 public class MainActivity extends ActionBarActivity {
 
-    private Button btnWrite, btnRead;
+    private Button btnWrite, btnRead, btnDelete;
     private EditText etMaintext;
     String text;
 
@@ -31,6 +32,7 @@ public class MainActivity extends ActionBarActivity {
 
         btnWrite = (Button) findViewById(R.id.btn_main_write);
         btnRead = (Button) findViewById(R.id.btn_main_read);
+        btnDelete = (Button) findViewById(R.id.btn_main_delete);
         etMaintext=(EditText)findViewById(R.id.et_main_text);
 
 
@@ -67,16 +69,21 @@ public class MainActivity extends ActionBarActivity {
                 try {
                     etMaintext.setText("");
                     FileInputStream fis = openFileInput("myfile.dat");
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
-                    StringBuilder out = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        out.append(line);
-                    }
-                    reader.close();
-                    fis.close();
+                    if(fis==null){
+                        Toast.makeText(MainActivity.this,"File doest not exist ",Toast.LENGTH_SHORT).show();
+                    } else {
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
+                        StringBuilder out = new StringBuilder();
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            out.append(line);
+                        }
+                        reader.close();
+                        fis.close();
 
-                    Toast.makeText(MainActivity.this,"Written text is: "+out.toString(),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this,"Written text is: "+out.toString(),Toast.LENGTH_SHORT).show();
+                    }
+
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                     Log.e("Read method",e.getMessage());
@@ -87,6 +94,18 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
+    }
+
+    public void delete (View v){
+        btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                File dir=getFilesDir();
+                File file= new File(dir,"myfile.dat");
+                boolean deleted=file.delete();
+                Toast.makeText(MainActivity.this,"File deleted",Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 
