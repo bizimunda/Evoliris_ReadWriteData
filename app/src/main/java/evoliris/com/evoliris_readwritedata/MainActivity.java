@@ -45,7 +45,9 @@ public class MainActivity extends ActionBarActivity {
                     text=etMaintext.getText().toString();
                     FileOutputStream fos = openFileOutput("myfile.dat", MODE_PRIVATE);
                     fos.write(text.getBytes());
-                    fos.close();
+                    if(fos!=null){
+                        fos.close();
+                    }
                 } catch (IOException e) {
                     Log.e("write", e.getMessage());
                 }
